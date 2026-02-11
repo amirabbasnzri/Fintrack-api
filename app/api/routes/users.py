@@ -1,3 +1,4 @@
+from urllib import response
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
@@ -63,9 +64,13 @@ def login(request: UserLoginSchema, db: Session = Depends(get_session)):
         
     access_token = create_access_token(data={"sub": str(db_user.id)})
     
-    return {"access_token": access_token, "token_type": "bearer"}
+    response = {
+        "message": f"Hello {db_user.name}. You have successfully logged in.",
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
 
-
+    return JSONResponse(content=response, status_code=status.HTTP_200_OK)
 
 @router.get("/me")
 def read_current_user(current_user: UserModel = Depends(get_current_user)):
@@ -73,5 +78,6 @@ def read_current_user(current_user: UserModel = Depends(get_current_user)):
         "id": current_user.id,
         "email": current_user.email,
         "name": current_user.name,
+        "role": current_user.role
     }
 
