@@ -30,3 +30,4 @@ python-dotenv>=1.2,<2.0
 
 # Optional extras (for file uploads, JWT, etc.)
 python-multipart>=0.0.22,<1.0
+faker

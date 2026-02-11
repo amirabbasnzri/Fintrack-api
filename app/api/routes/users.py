@@ -7,6 +7,7 @@ from app.db.session import get_session
 from app.schemas.users import UserRegisterSchema, UserLoginSchema
 from app.core.security import hash_password, is_password_confirmed, verify_password, create_access_token, verify_email_not_exists
 from app.api.deps import get_current_user
+from app.db.models import UserType
 
 
 
@@ -28,7 +29,7 @@ def user_register(request: UserRegisterSchema, db: Session = Depends(get_session
 
     # create user:
     user = UserModel(
-        name=request.name, email=request.email, hashed_password=hashed_password
+        name=request.name, email=request.email, hashed_password=hashed_password, role=UserType.USER
     )
     db.add(user)
     db.commit()
