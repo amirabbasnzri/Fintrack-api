@@ -1,21 +1,32 @@
-fastapi[all]
-uvicorn[standard]
+# FastAPI & server
+fastapi[all]>=0.128,<0.129
+uvicorn[standard]>=0.40,<0.41
+starlette>=0.52,<0.53
+httpx>=0.28,<0.29
+anyio>=4.12,<5.0
 
 # Database
-sqlalchemy
-psycopg2-binary
-alembic
+SQLAlchemy>=2.0.46,<3.0
+psycopg2-binary>=2.9.11,<3.0
+alembic>=1.18.4,<2.0
 
 # Auth & Security
-python-jose[cryptography]
-passlib[bcrypt]
+python-jose[cryptography]>=3.5,<4.0
+passlib[bcrypt]>=1.7.4,<2.0
+bcrypt>=5.0,<6.0
 
 # Validation
-pydantic
+pydantic>=2.12,<3.0
+pydantic-extra-types>=2.11,<3.0
+pydantic-settings>=2.12,<3.0
+pydantic-core>=2.41,<3.0
 
 # Dev Tools
-ruff
-black
+ruff>=0.15,<1.0
+black>=26.1,<27.0
 
 # Environment
-python-dotenv
+python-dotenv>=1.2,<2.0
+
+# Optional extras (for file uploads, JWT, etc.)
+python-multipart>=0.0.22,<1.0

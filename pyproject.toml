@@ -1,0 +1,10 @@
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+include = "app/.*\\.py"
+
+[tool.ruff]
+line-length = 88
+select = ["E", "F", "B", "I"]
+include = ["app/**/*.py"]
+exclude = ["app/migrations/**", "app/__init__.py"]
