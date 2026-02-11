@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from app.db.models import UserModel
 from app.db.session import get_session
-from app.schemas.users import UserRegisterSchema
+from app.schemas.users import UserRegisterSchema, UserLoginSchema
 from app.core.security import hash_password, verify_password
 
 router = APIRouter(tags=["users"])
@@ -46,3 +46,27 @@ def user_register(request: UserRegisterSchema, db: Session = Depends(get_session
         status_code=status.HTTP_201_CREATED,
     )
 
+
+
+# login:
+@router.post("/login")
+def user_login(request: UserLoginSchema, db: Session = Depends(get_session)):
+
+    # validation:
+    db_user = db.query(UserModel).filter(UserModel.email == request.email).first()
+    if db_user is not None:
+        is_verified = verify_password(request.password, db_user.hashed_password)
+ 
+    if not db_user or not is_verified:
+        raise HTTPException(
+            detail="Email not found or incorrect password", status_code=status.HTTP_400_BAD_REQUEST
+        )
+
+
+    # successful response:
+    return JSONResponse(
+        content={
+            "detail": f"User with email <{db_user.email}> logged in successfully"
+        },
+        status_code=status.HTTP_200_OK,
+    )
