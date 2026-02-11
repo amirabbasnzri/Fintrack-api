@@ -1,0 +1,21 @@
+fastapi[all]
+uvicorn[standard]
+
+# Database
+sqlalchemy
+psycopg2-binary
+alembic
+
+# Auth & Security
+python-jose[cryptography]
+passlib[bcrypt]
+
+# Validation
+pydantic
+
+# Dev Tools
+ruff
+black
+
+# Environment
+python-dotenv
