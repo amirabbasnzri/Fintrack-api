@@ -1,13 +1,17 @@
-from pydantic import BaseModel
 from datetime import datetime
+
+from pydantic import BaseModel
+
 
 class ExpenseBase(BaseModel):
     title: str
     amount: float
     description: str | None = None
 
+
 class ExpenseCreateSchema(ExpenseBase):
     pass
+
 
 class ExpenseOut(ExpenseBase):
     id: int

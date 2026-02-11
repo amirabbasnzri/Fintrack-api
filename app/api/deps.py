@@ -1,17 +1,20 @@
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from jose import jwt, JWTError
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from jose import JWTError, jwt
 from sqlalchemy.orm import Session
-from app.core.config import SECRET_KEY, ALGORITHM
-from app.db.session import get_session
-from app.db.models import UserModel, UserType
-from app.core.security import credentials_exception
 
+from app.core.config import ALGORITHM, SECRET_KEY
+from app.core.security import credentials_exception
+from app.db.models import UserModel, UserType
+from app.db.session import get_session
 
 security = HTTPBearer()
 
 
-def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security), db: Session = Depends(get_session)) -> UserModel:
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    db: Session = Depends(get_session),
+) -> UserModel:
     token = credentials.credentials
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])

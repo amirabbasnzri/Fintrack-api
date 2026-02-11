@@ -1,8 +1,9 @@
 from sqlalchemy.orm import Session
-from app.db.session import SessionLocal
-from app.db.models import UserModel, UserType
+
+from app.core.config import FIRST_ADMIN_EMAIL, FIRST_ADMIN_NAME, FIRST_ADMIN_PASSWORD
 from app.core.security import hash_password
-from app.core.config import FIRST_ADMIN_NAME, FIRST_ADMIN_EMAIL, FIRST_ADMIN_PASSWORD
+from app.db.models import UserModel, UserType
+from app.db.session import SessionLocal
 
 
 def create_first_admin():
@@ -21,7 +22,7 @@ def create_first_admin():
         name=name,
         email=email,
         hashed_password=hash_password(password),
-        role=UserType.ADMIN
+        role=UserType.ADMIN,
     )
     db.add(first_admin)
     db.commit()

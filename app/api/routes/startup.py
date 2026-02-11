@@ -1,8 +1,9 @@
 from fastapi import APIRouter
+
 from app.seed import seed_data
 
-
 router = APIRouter(tags=["Startup"])
+
 
 @router.post("/startup-seed")
 def startup_seed():
