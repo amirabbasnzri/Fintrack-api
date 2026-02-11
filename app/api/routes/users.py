@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.db.models import UserModel
 from app.db.session import get_session
 from app.schemas.users import UserRegisterSchema, UserLoginSchema
-from app.core.security import hash_password, verify_password
+from app.core.security import hash_password, verify_password, is_password_confirmed, verify_email_not_exists
 
 router = APIRouter(tags=["users"])
 
@@ -14,19 +14,11 @@ router = APIRouter(tags=["users"])
 def user_register(request: UserRegisterSchema, db: Session = Depends(get_session)):
 
     # email validation:
-    db_user_email = db.query(UserModel).filter(UserModel.email == request.email).first()
-    if db_user_email:
-        raise HTTPException(
-            detail="Email already registered", status_code=status.HTTP_400_BAD_REQUEST
-        )
+    verify_email_not_exists(db, request.email)
 
-    # password validation:
-    if request.password != request.confirm_password:
-        raise HTTPException(
-            detail="password and confirm_password do not match",
-            status_code=status.HTTP_400_BAD_REQUEST,
-        )
-
+    # password confirmation validation:
+    is_password_confirmed(request.password, request.confirm_password)
+    
     # hashing password:
     hashed_password = hash_password(request.password)
 
