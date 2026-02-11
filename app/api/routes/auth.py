@@ -4,9 +4,12 @@ from sqlalchemy.orm import Session
 from app.db.models import UserModel
 from app.db.session import get_session
 from app.schemas.users import UserRegisterSchema, UserLoginSchema
-from app.core.security import hash_password, verify_password, is_password_confirmed, verify_email_not_exists
+from app.core.security import hash_password, is_password_confirmed, verify_password, create_access_token, verify_email_not_exists
+from app.api.deps import get_current_user
 
-router = APIRouter(tags=["users"])
+
+
+router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 # registration:
@@ -31,19 +34,23 @@ def user_register(request: UserRegisterSchema, db: Session = Depends(get_session
     db.refresh(user)
     
     # successful response:
+    access_token = create_access_token(data={"sub": str(user.id)})
+    response = {
+        "msg": "User registered successfully",
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
+    
     return JSONResponse(
-        content={
-            "Server response": f"User <{user.name}> with email <{user.email}> and id <{user.id}> created successfully"
-        },
+        content=response,
         status_code=status.HTTP_201_CREATED,
     )
 
 
 
-# login:
-@router.post("/login")
-def user_login(request: UserLoginSchema, db: Session = Depends(get_session)):
 
+@router.post("/token")
+def login(request: UserLoginSchema, db: Session = Depends(get_session)):
     # validation:
     db_user = db.query(UserModel).filter(UserModel.email == request.email).first()
     if db_user is not None:
@@ -53,12 +60,18 @@ def user_login(request: UserLoginSchema, db: Session = Depends(get_session)):
         raise HTTPException(
             detail="Email not found or incorrect password", status_code=status.HTTP_400_BAD_REQUEST
         )
+        
+    access_token = create_access_token(data={"sub": str(db_user.id)})
+    
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
-    # successful response:
-    return JSONResponse(
-        content={
-            "detail": f"User with email <{db_user.email}> logged in successfully"
-        },
-        status_code=status.HTTP_200_OK,
-    )
+
+@router.get("/me")
+def read_current_user(current_user: UserModel = Depends(get_current_user)):
+    return {
+        "id": current_user.id,
+        "email": current_user.email,
+        "name": current_user.name,
+    }
+
