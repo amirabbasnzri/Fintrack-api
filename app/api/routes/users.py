@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
@@ -8,48 +8,53 @@ from app.core.security import (
     hash_password,
     is_password_confirmed,
     verify_email_not_exists,
-    verify_password,
+    verify_email_and_password,
 )
 from app.db.models import UserModel, UserType
 from app.db.session import get_session
 from app.schemas.users import UserLoginSchema, UserRegisterSchema
+from app.i18n.middleware import t
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 # registration:
 @router.post("/register")
-def user_register(request: UserRegisterSchema, db: Session = Depends(get_session)):
-
+def user_register(user: UserRegisterSchema, db: Session = Depends(get_session), request: Request = None):
+    
+    # set language
+    lang = request.cookies.get("lang", "en")
+    
+    
     # email validation:
-    verify_email_not_exists(db, request.email)
+    verify_email_not_exists(db, user.email, lang)
 
     # password confirmation validation:
-    is_password_confirmed(request.password, request.confirm_password)
+    is_password_confirmed(user.password, user.confirm_password, lang)
 
     # strong password:
-    if not request.strong_password():
+    if not user.strong_password():
         raise HTTPException(
             detail="Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character (like: !@#$%^&*)",
             status_code=status.HTTP_400_BAD_REQUEST,
         )
 
     # hashing password:
-    hashed_password = hash_password(request.password)
+    hashed_password = hash_password(user.password)
 
     # create user:
-    user = UserModel(
-        name=request.name,
-        email=request.email,
+    new_user = UserModel(
+        name=user.name,
+        email=user.email,
         hashed_password=hashed_password,
         role=UserType.USER,
     )
-    db.add(user)
+    db.add(new_user)
     db.commit()
-    db.refresh(user)
+    db.refresh(new_user)
 
     # successful response:
-    access_token = create_access_token(data={"sub": str(user.id)})
+    access_token = create_access_token(data={"sub": str(new_user.id)})
     response = {
         "msg": "User registered successfully",
         "access_token": access_token,
@@ -63,22 +68,19 @@ def user_register(request: UserRegisterSchema, db: Session = Depends(get_session
 
 
 @router.post("/token")
-def login(request: UserLoginSchema, db: Session = Depends(get_session)):
+def login(user: UserLoginSchema, db: Session = Depends(get_session), request: Request = None):
+    # set language
+    lang = request.cookies.get("lang", "en")
+    
     # validation:
-    db_user = db.query(UserModel).filter(UserModel.email == request.email).first()
-    if db_user is not None:
-        is_verified = verify_password(request.password, db_user.hashed_password)
-
-    if not db_user or not is_verified:
-        raise HTTPException(
-            detail="Email not found or incorrect password",
-            status_code=status.HTTP_400_BAD_REQUEST,
-        )
-
+    db_user = verify_email_and_password(db, user, lang)
+    # create access token:
     access_token = create_access_token(data={"sub": str(db_user.id)})
 
+    # message:
+    msg = f'{t("HELLO_USER", lang, name= db_user.name)}, {t("LOGIN_SUCCESS", lang)}'
     response = {
-        "message": f"Hello {db_user.name}. You have successfully logged in.",
+        "message": msg,
         "access_token": access_token,
         "token_type": "bearer",
     }
