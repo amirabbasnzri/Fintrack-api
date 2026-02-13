@@ -20,7 +20,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 # registration:
 @router.post("/register")
-def user_register(user: UserRegisterSchema, db: Session = Depends(get_session), request: Request = None):
+def user_register(request: Request, user: UserRegisterSchema, db: Session = Depends(get_session)):
     
     # set language
     lang = request.cookies.get("lang", "en")
@@ -68,7 +68,7 @@ def user_register(user: UserRegisterSchema, db: Session = Depends(get_session), 
 
 
 @router.post("/token")
-def login(user: UserLoginSchema, db: Session = Depends(get_session), request: Request = None):
+def login(request: Request, user: UserLoginSchema, db: Session = Depends(get_session)):
     # set language
     lang = request.cookies.get("lang", "en")
     
@@ -89,10 +89,16 @@ def login(user: UserLoginSchema, db: Session = Depends(get_session), request: Re
 
 
 @router.get("/me")
-def read_current_user(current_user: UserModel = Depends(get_current_user)):
-    return {
+def read_current_user(request: Request, current_user: UserModel = Depends(get_current_user)):
+    # set language:
+    lang = request.cookies.get("lang", "en") if request else "en"
+    
+    response = {
+        "message": t("PROFILE_FETCHED", lang),
         "id": current_user.id,
         "email": current_user.email,
         "name": current_user.name,
         "role": current_user.role,
     }
+    # successful response:
+    return JSONResponse(content=response, status_code=status.HTTP_200_OK)

@@ -2,9 +2,11 @@ from fastapi import FastAPI
 
 from app.api.routes import admin, expenses, startup, users, i18n
 from app.initial_data import create_first_admin
+from app.i18n.middleware import I18nAuthMiddleware
 
 app = FastAPI(title="Fintrack API", version="0.1.0")
 create_first_admin()
+app.add_middleware(I18nAuthMiddleware)
 
 app.include_router(i18n.router)
 app.include_router(startup.router)
