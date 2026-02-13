@@ -27,6 +27,13 @@ def user_register(request: UserRegisterSchema, db: Session = Depends(get_session
     # password confirmation validation:
     is_password_confirmed(request.password, request.confirm_password)
 
+    # strong password:
+    if not request.strong_password():
+        raise HTTPException(
+            detail="Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character (like: !@#$%^&*)",
+            status_code=status.HTTP_400_BAD_REQUEST,
+        )
+
     # hashing password:
     hashed_password = hash_password(request.password)
 
