@@ -1,0 +1,23 @@
+{
+  "USER_CREATED": "User registered successfully",
+  "PASSWORD_WEAK": "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character",
+  "INVALID_CREDENTIALS": "Email not found or incorrect password",
+  "LOGIN_SUCCESS": "You have successfully logged in",
+  "HELLO_USER": "Hello {name}",
+  "USERS_LIST_RETRIEVED": "List of users retrieved successfully",
+  "PROFILE_FETCHED": "User profile fetched successfully",
+  "EXPENSE_CREATED": "Expense created successfully",
+  "EXPENSE_UPDATED": "Expense updated successfully",
+  "EXPENSE_DELETED": "Expense deleted successfully",
+  "EXPENSE_NOT_FOUND": "Expense not found",
+  "NOT_ALLOWED": "Not allowed",
+  "EMAIL_EXISTS": "Email already registered",
+  "USER_NOT_FOUND": "User not found",
+  "USER_DELETED": "User deleted",
+  "DB_SEEDED": "Database was empty. Admin and fake data created.",
+  "DB_ALREADY_SEEDED": "Database already has admin. No changes made.",
+  "LANGUAGE_UPDATED": "Language updated successfully",
+  "INVALID_TOKEN": "Invalid authentication token",
+  "FORBIDDEN_ACCESS": "Forbidden access to endpoint",
+  "NOT_AUTHENTICATED": "Not authenticated"
+}
