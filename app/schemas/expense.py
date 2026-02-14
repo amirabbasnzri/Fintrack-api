@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class ExpenseBase(BaseModel):
@@ -12,8 +12,3 @@ class ExpenseBase(BaseModel):
 class ExpenseCreateSchema(ExpenseBase):
     pass
 
-
-class ExpenseOut(ExpenseBase):
-    id: int
-    user_id: int
-    created_at: datetime

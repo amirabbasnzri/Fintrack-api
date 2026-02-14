@@ -41,3 +41,4 @@ class ExpenseModel(Base):
 
     def __repr__(self):
         return f"<ExpenseModel(id={self.id}, title='{self.title}', amount={self.amount}, user_id={self.user_id})>"
+

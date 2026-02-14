@@ -8,6 +8,7 @@
   "USERS_LIST_RETRIEVED": "List of users retrieved successfully",
   "PROFILE_FETCHED": "User profile fetched successfully",
   "EXPENSE_CREATED": "Expense created successfully",
+  "EXPENSE_FETCHED": "Expense fetched successfully.",
   "EXPENSE_UPDATED": "Expense updated successfully",
   "EXPENSE_DELETED": "Expense deleted successfully",
   "EXPENSE_NOT_FOUND": "Expense not found",
@@ -19,5 +20,6 @@
   "DB_ALREADY_SEEDED": "Database already has admin. No changes made.",
   "INVALID_TOKEN": "Invalid authentication token",
   "FORBIDDEN_ACCESS": "Forbidden access to endpoint",
-  "NOT_AUTHENTICATED": "Not authenticated"
+  "NOT_AUTHENTICATED": "Not authenticated",
+  "ADMIN_CREATED_SUCCESS": "Admin created successfully."
 }
