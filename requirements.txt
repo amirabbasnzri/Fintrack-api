@@ -24,6 +24,7 @@ pydantic-core>=2.41,<3.0
 # Dev Tools
 ruff>=0.15,<1.0
 black>=26.1,<27.0
+pytest>=9.0.0,<10.0
 
 # Environment
 python-dotenv>=1.2,<2.0
