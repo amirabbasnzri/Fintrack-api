@@ -5,8 +5,7 @@ from app.schemas.i18n import LanguageSchema
 
 router = APIRouter(tags=["i18n"], prefix="/i18n")
 
-
 @router.post("/set-language/{lang}")
 async def set_language(data: LanguageSchema, response: Response):
-    response.set_cookie(key="lang", value=data.lang)
-    return JSONResponse({"message": t("LANGUAGE_SAT", data.lang)})
+    response.set_cookie("lang", data.lang)
+    return {"message": t("LANGUAGE_SET", data.lang)}
